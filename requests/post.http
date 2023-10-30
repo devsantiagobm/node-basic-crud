@@ -2,13 +2,11 @@ POST http://localhost:8000/clients
 Content-Type: application/json
 
 {
-    "nombre": "Santiago",
-    "apellidos": "Barrera Muñoz",
-    "cedula": 1020107445 ,
-    "edad": 18,
+    "nombre": "Manuel",
+    "apellidos": "García Jiménez",
+    "cedula": 7845123690,
+    "edad": 50,
     "sexo": "M",
-    "direccion": "Calle 65",
-    "telefono": 3242990764,
-    "otro": "ejemplo"
+    "direccion": "Calle 30",
+    "telefono": 3245678910
 }
-

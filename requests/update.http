@@ -1,9 +1,9 @@
 PUT http://localhost:8000/clients
 Content-Type: application/json
-x-client-id: 653f0682c71c00e5ecd96932
+x-client-id: 653f1316bc03409b30063952
 
 {
-    "nombre": "Diego 2",
+    "nombre": "Santiago",
     "apellidos": "Barrera Muñoz",
     "cedula": 1020107442,
     "edad": 18,

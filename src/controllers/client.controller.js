@@ -25,7 +25,8 @@ async function remove(req = Request, res = Response) {
 async function update(req = Request, res = Response) {
     const id = req.headers["x-client-id"]
     await client.update(id, req.body)
-    return res.json({ message: "Client updated" })
+    const clients = await client.find();
+    return res.json({ message: "Client updated", clients })
 }
 
 export const clientControllers = {

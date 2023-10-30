@@ -6,16 +6,11 @@ const app = express()
 
 app.use(express.json())
 app.use(cors({
-    origin:'*', 
-    credentials:true,            //access-control-allow-credentials:true
-    optionSuccessStatus:200,
- }))
-
- 
-
+    origin: '*',
+    credentials: true,
+    optionSuccessStatus: 200,
+}))
 
 app.use("/clients", clientRouter)
 
-app.listen(8000, () => {
-    console.log("Servidor corriendo...");
-})
+app.listen(8000, () => console.log("Servidor corriendo..."))

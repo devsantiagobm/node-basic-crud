@@ -1,0 +1,15 @@
+PUT http://localhost:8000/clients
+Content-Type: application/json
+x-client-id: 653f0682c71c00e5ecd96932
+
+{
+    "nombre": "Diego 2",
+    "apellidos": "Barrera Muñoz",
+    "cedula": 1020107442,
+    "edad": 18,
+    "sexo": "M",
+    "direccion": "Calle 65",
+    "telefono": 3242990764,
+    "otro": "nombre"
+}
+

@@ -1,0 +1,14 @@
+POST http://localhost:8000/clients
+Content-Type: application/json
+
+{
+    "nombre": "Santiago",
+    "apellidos": "Barrera Muñoz",
+    "cedula": 1020107445 ,
+    "edad": 18,
+    "sexo": "M",
+    "direccion": "Calle 65",
+    "telefono": 3242990764,
+    "otro": "ejemplo"
+}
+

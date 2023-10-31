@@ -1,95 +1,114 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client"
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import { IoIosAdd as AddIcon } from "react-icons/io"
+import { fields, fullFields, API_URL } from '@/constants'
+import FormModal from '@/components/form-modal'
+import { AnimatePresence } from 'framer-motion'
+
+
 
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    const [clients, setClients] = useState([])
+    const [formIsActive, setFormIsActive] = useState(false)
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+    useEffect(() => {
+        (async () => {
+            const response = await axios.get(API_URL)
+            const { clients } = response.data
+            setClients(clients)
+        })()
+    }, [])
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
+    async function handleUpdate(e) {
+        const form = e.currentTarget.parentElement;
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+        const dataWithId = Object.fromEntries(new FormData(form))
+        const { id, ...data } = dataWithId
+
+        console.log(dataWithId);
+        const response = await axios(API_URL, {
+            method: "PUT",
+            data,
+            headers: {
+                "Content-Type": "application/json",
+                "x-client-id": id
+            }
+        })
+
+        console.log(response);
+    }
+
+
+    async function handleDelete(id) {
+        await axios(API_URL, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "x-client-id": id
+            }
+        })
+
+        const newClients = clients.filter(client => client._id !== id)
+        setClients(newClients)
+    }
+
+    return (
+        <main className='main'>
+
+            <AnimatePresence>
+                {formIsActive && <FormModal setFormIsActive={setFormIsActive} setClients={setClients} />}
+            </AnimatePresence>
+
+            <header className='main__header'>
+                <h1 className='main__title'>Lista de clientes</h1>
+
+                <button className='main__add' onClick={() => setFormIsActive(true)}>
+                    <AddIcon className='main__add-icon'></AddIcon>
+                    Añadir
+                </button>
+            </header>
+
+            <div className='table'>
+                <div className='table__row'>
+                    {
+                        fullFields.map(({ name }) => {
+                            return <div className='table__column'>{name}</div>
+                        })
+                    }
+                </div>
+
+                {
+                    clients.map(client => {
+                        const clientInformation = Object.entries(client)
+                        const clientWithOutId = clientInformation.filter(([key]) => key !== "_id")
+
+                        return (
+                            <form className='table__row' key={client._id} onSubmit={(e) => e.preventDefault()}>
+                                {
+                                    clientWithOutId.map(([key, value]) => {
+                                        const { type } = fullFields.find(({ name }) => name === key)
+
+                                        return (
+                                            <input className='table__column' type={type} defaultValue={value} name={key} key={key} onBlur={handleUpdate} />
+                                        )
+                                    })
+                                }
+
+                                <button className='table__column--delete' onClick={() => handleDelete(client._id)}>
+                                    Eliminar
+                                </button>
+
+                            </form>
+                        )
+                    })
+                }
+            </div>
+        </main>
+    )
 }
+
+
+
